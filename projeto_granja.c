@@ -143,7 +143,6 @@ int main()
     // BUZZER
     pwm_init_buzzer(BUZZER_PIN);
 
-
     // RPM
     // Configuração do pino do sensor
     gpio_init(SENSOR_PIN);
@@ -164,9 +163,7 @@ int main()
 
     while (true)
     {
-        play_star_wars(BUZZER_PIN);
-        
-        sleep_ms(1000); // atualiza a cada 1 segundo
+        // play_star_wars(BUZZER_PIN);
 
         uint64_t now = to_ms_since_boot(get_absolute_time());
         uint64_t elapsed = now - last_time;
@@ -180,6 +177,17 @@ int main()
         float rpm = calculate_rpm(pulses, elapsed);
 
         printf("Pulsos: %u | Tempo: %llu ms | RPM: %.2f\n", pulses, elapsed, rpm);
+
+        if ( rpm > 0 && rpm < 400) {
+            play_star_wars(BUZZER_PIN);
+            
+            clean_display(ssd);
+            text[0] = "    Alerta!    ";
+            write_display(text, 1, ssd);
+            clean_display(ssd);
+        }
+
+        sleep_ms(1000); // atualiza a cada 1 segundo
     }
 
     return 0;
